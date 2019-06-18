@@ -15,6 +15,7 @@
 namespace App\Controller;
 
 use Cake\Core\Configure;
+use Cake\I18n\Time;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
@@ -40,6 +41,14 @@ class PagesController extends AppController
      */
     public function display(...$path)
     {
+
+        $this->loadModel('Schedules');
+        $today = new Time();
+
+        $schedules = $this->Schedules->find('all')
+                                     ->contain(['Series','Users'])
+                                     ->toArray();
+        $this->set(compact('schedules','today'));                             
         $count = count($path);
         if (!$count) {
             return $this->redirect('/');
